@@ -22,7 +22,7 @@ secrets.json
 # Logs
 *.log
 logs/
-.txt
+analysis_result.txt
 
 # Build
 dist/
