@@ -59,6 +59,8 @@ def load_dataset(csv_path: str) -> pd.DataFrame:
         print("\n--- subgroup ---")
         print(df['name'].value_counts())
 
+        return df
+
     except KeyError as e:
         raise KeyError(
             f"Required column not found in dataset: {e}"
