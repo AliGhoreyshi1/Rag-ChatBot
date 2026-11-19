@@ -2,7 +2,7 @@
 import pickle
 from unittest.mock import Mock
 
-import Services.model_train as model_train
+import Services.data_service as data_service
 
 
 class DummyTokenizer:
@@ -53,22 +53,22 @@ def test_bpe_on_data_success(tmp_path, monkeypatch, capsys):
     )
 
     monkeypatch.setattr(
-        model_train, "comments_to_documents", mock_comments
+        data_service, "comments_to_documents", mock_comments
     )
     monkeypatch.setattr(
-        model_train, "build_training_data", mock_build
+        data_service, "build_training_data", mock_build
     )
     monkeypatch.setattr(
-        model_train, "split_packed", mock_split
+        data_service, "split_packed", mock_split
     )
 
-    monkeypatch.setattr(model_train, "NUM_MERGES", 100)
-    monkeypatch.setattr(model_train, "SEQ_LENGTH", 128)
+    monkeypatch.setattr(data_service, "NUM_MERGES", 100)
+    monkeypatch.setattr(data_service, "SEQ_LENGTH", 128)
 
     monkeypatch.chdir(tmp_path)
 
     # Act
-    model_train.bpe_on_data(csv_path)
+    data_service.bpe_on_data(csv_path)
 
     # Assert: function calls
     mock_comments.assert_called_once_with(
