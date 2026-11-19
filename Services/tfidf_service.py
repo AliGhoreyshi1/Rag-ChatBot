@@ -10,7 +10,12 @@ def term_scores(df: pd.DataFrame, text_column: str = "text_norm", score_column: 
                 min_df: int = 25, shrink_k: int = PRIOR_WEIGHT * 2) -> pd.DataFrame:
     texts = df[text_column].fillna("")
     vec = TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", min_df=min_df, lowercase=False)
-    X = vec.fit_transform(texts)
+    try:
+        X = vec.fit_transform(texts)
+    except ValueError:
+        # sklearn وقتی هیچ کلمه‌ای از min_df نگذرد خطا می‌دهد؛ جدول خالی برمی‌گردانیم
+        return pd.DataFrame(columns=["term", "comment_count", "mean_score",
+                                     "smoothed_score", "mean_tfidf"])
     terms = np.array(vec.get_feature_names_out())
 
     presence = (X > 0).astype(float).tocsc()
