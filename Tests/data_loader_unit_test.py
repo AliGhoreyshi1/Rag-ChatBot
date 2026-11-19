@@ -2,7 +2,7 @@
 import pandas as pd
 import pytest
 
-from Services import model_train
+from Services import data_service
 
 
 # ۱. تست بارگذاری موفق دیتاست
@@ -16,7 +16,7 @@ def test_load_dataset_success(tmp_path):
 
     df.to_csv(csv_path, index=False)
 
-    result = model_train.load_dataset(str(csv_path))
+    result = data_service.load_dataset(str(csv_path))
 
     assert isinstance(result, pd.DataFrame)
     assert not result.empty
@@ -39,7 +39,7 @@ def test_missing_required_column(tmp_path):
         KeyError,
         match="Required column not found"
     ):
-        model_train.load_dataset(str(csv_path))
+        data_service.load_dataset(str(csv_path))
 
 
 # ۳. تست فایل CSV خالی
@@ -51,7 +51,7 @@ def test_empty_csv(tmp_path):
         ValueError,
         match="Invalid value encountered"
     ):
-        model_train.load_dataset(str(csv_path))
+        data_service.load_dataset(str(csv_path))
 
 
 # ۴. تست مسیر نامعتبر فایل
@@ -59,7 +59,7 @@ def test_file_not_found(tmp_path):
     csv_path = tmp_path / "missing.csv"
 
     with pytest.raises(FileNotFoundError):
-        model_train.load_dataset(str(csv_path))
+        data_service.load_dataset(str(csv_path))
 
 
 # ۵. تست خطاهای اختصاصی تابع
@@ -81,7 +81,7 @@ def test_exception_handling(
         raise exception("Test error")
 
     monkeypatch.setattr(
-        model_train.pd,
+        data_service.pd,
         "read_csv",
         mock_read_csv
     )
@@ -90,7 +90,7 @@ def test_exception_handling(
         exception,
         match=expected_message
     ) as exc_info:
-        model_train.load_dataset("fake.csv")
+        data_service.load_dataset("fake.csv")
 
     # بررسی حفظ Exception اصلی
     assert isinstance(exc_info.value.__cause__, exception)
