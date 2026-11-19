@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from Services.model_train import ensure_dataset_available, DATASET_COMMENTS_FULL_DOWNLOAD_URL
+from Services.data_service import ensure_dataset_available, DATASET_COMMENTS_FULL_DOWNLOAD_URL
 
 def test_existing_dataset(tmp_path):
     csv_path = tmp_path / "dataset.csv"
