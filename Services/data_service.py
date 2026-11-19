@@ -39,7 +39,17 @@ def ensure_dataset_available(csv_path: str, download_url: str | None = None) -> 
         raise RuntimeError("gdown is not installed. Run: pip install gdown") from exc
 
     os.makedirs(os.path.dirname(os.path.abspath(csv_path)), exist_ok=True)
-    result = gdown.download(url=download_url, output=csv_path, quiet=False)
+    try:
+        result = gdown.download(url=download_url, output=csv_path, quiet=False)
+    except Exception as exc:
+        # فایل ناقص نباید باقی بماند، وگرنه دفعه‌ی بعد به‌عنوان داده‌ی سالم پذیرفته می‌شود
+        if os.path.isfile(csv_path):
+            os.remove(csv_path)
+        raise RuntimeError(
+            "Could not download the dataset from Google Drive. Check your internet "
+            "connection and make sure the file is shared with 'Anyone with the link'."
+        ) from exc
+
     if not result or not os.path.isfile(csv_path) or os.path.getsize(csv_path) == 0:
         if os.path.isfile(csv_path):
             os.remove(csv_path)
